@@ -12,7 +12,6 @@ class ListaProdutos extends StatefulWidget {
 }
 
 class _ListaProdutosState extends State<ListaProdutos> {
- 
   ProdutoService produtoService = ProdutoService();
 
   List<Produto> produtos = [];
@@ -25,8 +24,8 @@ class _ListaProdutosState extends State<ListaProdutos> {
     carregaProdutos();
   }
 
-  Future<void> carregaProdutos(Context) async {
-    produtos = await produtoService.carregarProdutos(Context);
+  Future<void> carregaProdutos() async {
+    produtos = await produtoService.carregarProdutos();
 
     setState(() {
       this.produtos = produtos;
@@ -73,7 +72,8 @@ class _ListaProdutosState extends State<ListaProdutos> {
 
                       subtitle: Text(produto.desc),
 
-                      trailing: Text("R\$ ${produto.valor}"),
+                      trailing: Icon(Icons.delete), onTap: deleteProduto(produto),
+                      
                     ),
                   );
                 },

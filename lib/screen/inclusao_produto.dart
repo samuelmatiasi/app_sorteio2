@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:crud_produto/model/produto.dart';
 import 'package:http/http.dart' as http;
 
