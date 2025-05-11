@@ -40,7 +40,8 @@ class _ListaProdutosState extends State<ListaProdutos> {
       appBar: AppBar(
         title: Text("Sorteio Aplle space"),
         centerTitle: true,
-        backgroundColor: Color.fromARGB(234, 96, 4, 182),),
+        backgroundColor: Color.fromARGB(234, 96, 4, 182),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: abrirTelaIclusao,
 
@@ -72,8 +73,10 @@ class _ListaProdutosState extends State<ListaProdutos> {
 
                       subtitle: Text(produto.desc),
 
-                      trailing: Icon(Icons.delete), onTap: deleteProduto(produto),
-                      
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => deleteProduto(produto),
+                      ),
                     ),
                   );
                 },
@@ -81,6 +84,14 @@ class _ListaProdutosState extends State<ListaProdutos> {
     );
   }
 
+void deleteProduto(Produto produto) async {
+ 
+  await produtoService.deletarProduto(produto.id!);
+
+  setState(() {
+    produtos.remove(produto);
+  });
+}
   void abrirTelaIclusao() async {
     await Navigator.push(
       context,

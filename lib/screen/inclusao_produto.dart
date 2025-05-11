@@ -14,8 +14,6 @@ class InclusaoProduto extends StatelessWidget {
 
   final TextEditingController imgControler = TextEditingController();
 
-  final TextEditingController valorControler = TextEditingController();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,16 +59,6 @@ class InclusaoProduto extends StatelessWidget {
                 ),
               ),
 
-              TextField(
-                controller: valorControler,
-
-                decoration: InputDecoration(
-                  label: Text("valor"),
-
-                  border: OutlineInputBorder(),
-                ),
-              ),
-
               ElevatedButton(
                 onPressed: () => incluirProduto(context),
 
@@ -90,8 +78,6 @@ class InclusaoProduto extends StatelessWidget {
       desc: descControler.text,
 
       img: imgControler.text,
-
-      valor: double.tryParse(valorControler.text),
     );
 
     if (await validarProduto(produto, context)) {
@@ -106,58 +92,45 @@ class InclusaoProduto extends StatelessWidget {
     }
   }
 
-void errorDialog(String e, String t, dynamic context ){
-  showDialog(context: context,
-   builder: (context) => AlertDialog(
-    title: Text(e),
-    content: Text(t),
-    actions: [
-      TextButton(
-        onPressed: (){
-          Navigator.pop(context);
-          }, 
-        child: Text("OK"))
-    ]
-   )
-   
-   );
-}
+  void errorDialog(String e, String t, dynamic context) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(e),
+            content: Text(t),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("OK"),
+              ),
+            ],
+          ),
+    );
+  }
 
-  Future<bool> validarProduto(Produto produto, dynamic context ) async {
-    String e ;
+  Future<bool> validarProduto(Produto produto, dynamic context) async {
+    String e;
     String t;
-   bool validacaoImagem = await validarImagem(produto.img);
-    if (produto.nome.length < 3) 
-    {
+    bool validacaoImagem = await validarImagem(produto.img);
+    if (produto.nome.length < 3) {
       e = "o nome deve conter no minimo 3 caractes";
       t = "Nome Invalido";
       errorDialog(t, e, context);
-      return false; 
-    }
-    else if  (produto.desc.length < 10)   
-    {
+      return false;
+    } else if (produto.desc.length < 10) {
       e = "Descrição muito curta";
       t = "Descrição Invalida";
-       errorDialog(e, t, context);
-      return false; 
-    }
-
-    else if(validacaoImagem) 
-    {
+      errorDialog(e, t, context);
+      return false;
+    } else if (validacaoImagem) {
       e = "Imagem Invalida";
-      t =  "endereço de imagem invalido " ;
-       errorDialog(t, e, context);
-      return false; 
-    } 
-
-    else if (produto.valor == null)
-     {
-      e = "Valor invalido";
-      t =  "Atribua um valor ao produto" ;
-       errorDialog(t, e, context);
-      return false; 
-    } ;
-
+      t = "endereço de imagem invalido ";
+      errorDialog(t, e, context);
+      return false;
+    }
     return true;
   }
 
