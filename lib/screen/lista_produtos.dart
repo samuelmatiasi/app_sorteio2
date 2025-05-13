@@ -34,6 +34,27 @@ class _ListaProdutosState extends State<ListaProdutos> {
     estaCarregando = false;
   }
 
+  void deleteProduto(Produto produto) async {
+    await produtoService.deletarProduto(produto.id!);
+
+    setState(() {
+      produtos.remove(produto);
+    });
+  }
+
+void abrirTelaIclusao() async {
+  Produto? novoProduto = await Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => InclusaoProduto()),
+  );
+
+  if (novoProduto != null) {
+    setState(() {
+      produtos.add(novoProduto); // Only added locally
+    });
+  }
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -42,63 +63,71 @@ class _ListaProdutosState extends State<ListaProdutos> {
         centerTitle: true,
         backgroundColor: Color.fromARGB(234, 96, 4, 182),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: abrirTelaIclusao,
-
-        child: Icon(Icons.add_circle_outline_outlined),
-      ),
-
-      body:
-          estaCarregando
-              ? Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                itemCount: produtos.length,
-
-                itemBuilder: (context, index) {
-                  Produto produto = produtos[index];
-
-                  return Card(
-                    child: ListTile(
-                      leading: Image.network(produto.img, width: 50),
-
-                      title: Text(
-                        produto.nome,
-
-                        style: TextStyle(
-                          fontSize: 20,
-
-                          fontFamily: "Comic Sans",
-                        ),
-                      ),
-
-                      subtitle: Text(produto.desc),
-
-                      trailing: IconButton(
-                        icon: Icon(Icons.delete),
-                        onPressed: () => deleteProduto(produto),
-                      ),
+      floatingActionButton: Column(
+  mainAxisAlignment: MainAxisAlignment.end,
+  children: [
+    FloatingActionButton(
+      heroTag: "add",
+      onPressed: abrirTelaIclusao,
+      child: Icon(Icons.add),
+    ),
+    SizedBox(height: 10),
+    FloatingActionButton(
+      heroTag: "register",
+      backgroundColor: Colors.green,
+      onPressed: registrarProdutos,
+      child: Icon(Icons.cloud_upload),
+    ),
+  ],
+),
+      
+      body: estaCarregando
+    ? Center(child: CircularProgressIndicator())
+    : produtos.isEmpty
+        ? Center(
+            child: Text(
+              'Não há produtos para listar aqui.',
+              style: TextStyle(fontSize: 18),
+            ),
+          )
+        : ListView.builder(
+            itemCount: produtos.length,
+            itemBuilder: (context, index) {
+              Produto produto = produtos[index];
+              return Card(
+                child: ListTile(
+                  leading: Image.network(produto.img, width: 50),
+                  title: Text(
+                    produto.nome,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: "Comic Sans",
                     ),
-                  );
-                },
-              ),
+                  ),
+                  subtitle: Text(produto.desc),
+                  trailing: IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => deleteProduto(produto),
+                  ),
+                ),
+              );
+            },
+          ),
     );
   }
 
-void deleteProduto(Produto produto) async {
- 
-  await produtoService.deletarProduto(produto.id!);
+ void registrarProdutos() async {
+  for (var produto in produtos) {
+    if (produto.id == null) {
+      await produtoService.incluirProduto(produto);
+    }
+  }
 
-  setState(() {
-    produtos.remove(produto);
-  });
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Produtos registrados com sucesso!")),
+  );
+
+  // Recarrega do banco, caso deseje ver com IDs atualizados
+  carregaProdutos();
 }
-  void abrirTelaIclusao() async {
-    await Navigator.push(
-      context,
-
-      MaterialPageRoute(builder: (context) => InclusaoProduto()),
-    );
-
-    carregaProdutos();
-  }
 }

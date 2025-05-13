@@ -1,7 +1,7 @@
 import 'package:crud_produto/model/produto.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:crud_produto/service/produto_service.dart';
+//import 'package:crud_produto/service/produto_service.dart';
 
 import 'package:flutter/material.dart';
 
@@ -72,25 +72,18 @@ class InclusaoProduto extends StatelessWidget {
   }
 
   Future<void> incluirProduto(BuildContext context) async {
-    Produto produto = Produto(
-      nome: nomeControler.text,
+  Produto produto = Produto(
+    nome: nomeControler.text,
+    desc: descControler.text,
+    img: imgControler.text,
+  );
 
-      desc: descControler.text,
-
-      img: imgControler.text,
-    );
-
-    if (await validarProduto(produto, context)) {
-      ProdutoService produtoService = ProdutoService();
-
-      produtoService.incluirProduto(produto);
-
-      produtoService.carregarProdutos();
-      Navigator.pop(context);
-    } else {
-      print("Erro ao validar");
-    }
+  if (await validarProduto(produto, context)) {
+    Navigator.pop(context, produto); // Return product to the caller
+  } else {
+    print("Erro ao validar");
   }
+}
 
   void errorDialog(String e, String t, dynamic context) {
     showDialog(
