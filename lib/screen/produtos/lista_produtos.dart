@@ -1,6 +1,6 @@
 import 'package:crud_produto/model/produto.dart';
 
-import 'package:crud_produto/screen/inclusao_produto.dart';
+import 'package:crud_produto/screen/produtos/inclusao_produto.dart';
 
 import 'package:crud_produto/service/produto_service.dart';
 

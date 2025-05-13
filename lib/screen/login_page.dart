@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'lista_produtos.dart';
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
     if (user == "admin" && pass == "1234") {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => ListaProdutos()),
+        MaterialPageRoute(builder: (context) => HomePage()),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
