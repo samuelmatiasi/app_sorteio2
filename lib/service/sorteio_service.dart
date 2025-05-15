@@ -5,27 +5,28 @@ import 'package:http/http.dart' as http;
 class SorteioService {
   final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/sorteio";
 
-  Future<List<Sorteio>> carregarSorteios() async {
-    final List<Sorteio> sorteios = [];
-    try {
-      final resp = await http.get(Uri.parse("$url.json"));
-      if (resp.statusCode >= 200 && resp.statusCode < 300) {
-        if (resp.body.isNotEmpty && resp.body != 'null') {
-          final Map<String, dynamic> data = jsonDecode(resp.body);
-          data.forEach((key, value) {
-            final sorteio = Sorteio.fromJson(value);
-            sorteio.id = key;
-            sorteios.add(sorteio);
-          });
+  Future<Sorteio?> carregarSorteio() async {
+  try {
+    final resp = await http.get(Uri.parse("$url.json"));
+    if (resp.statusCode >= 200 && resp.statusCode < 300) {
+      if (resp.body.isNotEmpty && resp.body != 'null') {
+        final Map<String, dynamic> data = jsonDecode(resp.body);
+        if (data.isNotEmpty) {
+          final key = data.keys.first;
+          final sorteio = Sorteio.fromJson(data[key]);
+          sorteio.id = key;
+          return sorteio;
         }
-      } else {
-        print("Erro ao carregar: ${resp.statusCode} - ${resp.body}");
       }
-    } catch (e) {
-      print("Erro ao carregar sorteios: $e");
+    } else {
+      print("Erro ao carregar: ${resp.statusCode} - ${resp.body}");
     }
-    return sorteios;
+  } catch (e) {
+    print("Erro ao carregar sorteio: $e");
   }
+  return null;
+}
+
 
   Future<String?> incluirSorteio(Sorteio sorteio) async {
     try {

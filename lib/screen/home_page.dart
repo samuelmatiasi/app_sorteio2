@@ -1,15 +1,51 @@
 import 'package:flutter/material.dart';
 import 'produtos/lista_produtos.dart';
-import 'sorteios/criar_sorteio.dart';
+import 'sorteio/criar_sorteio.dart';
 import 'status/status_sorteio.dart';
+import 'package:crud_produto/service/sorteio_service.dart';
+import 'package:crud_produto/model/sorteio.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final SorteioService _sorteioService = SorteioService();
+  bool _checking = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkSorteio();
+  }
+
+  Future<void> _checkSorteio() async {
+    final sorteio = await _sorteioService.carregarSorteio();
+    if (sorteio != null) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (_) => const StatusSorteio()),
+      );
+    } else {
+      setState(() => _checking = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_checking) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Página Inicial"),
-        backgroundColor: Color(0xFF6200EE),
+        title: const Text("Página Inicial"),
+        backgroundColor: const Color(0xFF6200EE),
       ),
       body: Center(
         child: Padding(
@@ -26,47 +62,47 @@ class HomePage extends StatelessWidget {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3700B3),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF3700B3),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text("Listar Produtos", style: TextStyle(fontSize: 18)),
+                child: const Text("Listar Produtos", style: TextStyle(fontSize: 18)),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => CriarSorteio()),
+                    MaterialPageRoute(builder: (_) => const CriarSorteio()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3700B3),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF3700B3),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text("Criar Sorteio", style: TextStyle(fontSize: 18)),
+                child: const Text("Criar Sorteio", style: TextStyle(fontSize: 18)),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => StatusSorteio()),
+                    MaterialPageRoute(builder: (_) => const StatusSorteio()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Color(0xFF3700B3),
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: const Color(0xFF3700B3),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-                child: Text("Acompanhar Sorteio", style: TextStyle(fontSize: 18)),
+                child: const Text("Acompanhar Sorteio", style: TextStyle(fontSize: 18)),
               ),
             ],
           ),
