@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'produtos/lista_produtos.dart';
 import 'sorteio/criar_sorteio.dart';
-import 'status/status_sorteio.dart';
+import 'status/status_sorteio.dart' as status_page;
 import 'package:crud_produto/service/sorteio_service.dart';
-import 'package:crud_produto/model/sorteio.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -27,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     if (sorteio != null) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const StatusSorteio()),
+         MaterialPageRoute(builder: (_) => const status_page.StatusSorteio()),
       );
     } else {
       setState(() => _checking = false);
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => const StatusSorteio()),
+                    MaterialPageRoute(builder: (_) => const status_page.StatusSorteio()),
                   );
                 },
                 style: ElevatedButton.styleFrom(

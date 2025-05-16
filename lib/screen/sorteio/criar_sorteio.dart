@@ -37,12 +37,13 @@ class _CriarSorteioState extends State<CriarSorteio> {
     if (_selectedProductIds.isEmpty || _selectedDuration == null) return;
 
     final sorteio = Sorteio(
-      nome: "Sorteio Automático",
-      desc: "Sorteio criado automaticamente.",
-      img: "",
-      duration: Duration(minutes: _selectedDuration!),
-      productIds: _selectedProductIds.toList(),
-    );
+  nome: "Sorteio Automático",
+  desc: "Sorteio criado automaticamente.",
+  img: "",
+  duration: Duration(minutes: _selectedDuration!),
+  productIds: _selectedProductIds.toList(),
+  createdAt: DateTime.now(), // <-- Crucial!
+);
 
     await _sorteioService.incluirSorteio(sorteio);
 
@@ -60,6 +61,7 @@ class _CriarSorteioState extends State<CriarSorteio> {
       context,
       MaterialPageRoute(builder: (context) => const StatusSorteio()),
     );
+
   }
 
   @override
@@ -126,13 +128,14 @@ class _CriarSorteioState extends State<CriarSorteio> {
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _criarSorteio,
-                style: ElevatedButton.styleFrom(
+                 style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF3700B3),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  backgroundColor: Theme.of(context).primaryColor,
                 ),
+        
                 child: const Text("Criar Sorteio", style: TextStyle(fontSize: 18)),
               ),
             ],

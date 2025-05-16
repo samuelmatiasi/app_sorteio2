@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Sorteio {
   String? id;
   String nome;
@@ -7,6 +5,7 @@ class Sorteio {
   String img;
   Duration duration;
   List<String> productIds;
+  DateTime? createdAt; // <--- Add this
 
   Sorteio({
     this.id,
@@ -15,25 +14,33 @@ class Sorteio {
     required this.img,
     required this.duration,
     required this.productIds,
+    this.createdAt,
   });
 
-  factory Sorteio.fromJson(Map<String, dynamic> json) {
+  // Add this to persist the creation time
+  factory Sorteio.fromJson(Map<String, dynamic> map) {
     return Sorteio(
-      nome: json['nome'],
-      desc: json['desc'],
-      img: json['img'],
-      duration: Duration(minutes: json['durationMinutes']),
-      productIds: List<String>.from(json['productIds'] ?? []),
+      id: map['id'],
+      nome: map['nome'],
+      desc: map['desc'],
+      img: map['img'],
+      duration: Duration(minutes: map['duration']),
+      productIds: List<String>.from(map['productIds']),
+      createdAt: map['createdAt'] != null
+          ? DateTime.parse(map['createdAt'])
+          : null,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'nome': nome,
       'desc': desc,
       'img': img,
-      'durationMinutes': duration.inMinutes,
+      'duration': duration.inMinutes,
       'productIds': productIds,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 }
