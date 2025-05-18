@@ -5,6 +5,7 @@ import 'package:crud_produto/model/produto.dart';
 import 'package:crud_produto/model/sorteio.dart';
 import 'package:crud_produto/service/produto_service.dart';
 import 'package:crud_produto/service/sorteio_service.dart';
+import 'package:crud_produto/service/ganhador_service.dart';
 
 class CriarSorteio extends StatefulWidget {
   const CriarSorteio({super.key});
@@ -16,17 +17,18 @@ class CriarSorteio extends StatefulWidget {
 class _CriarSorteioState extends State<CriarSorteio> {
   final ProdutoService _produtoService = ProdutoService();
   final SorteioService _sorteioService = SorteioService();
+  final GanhadorService __ganhadorService = GanhadorService();
   List<Produto> _produtos = [];
-  Set<String> _selectedProductIds = {};
-  int? _selectedDuration;
+  Set<String> _idProdutosSelecionados = {};
+  int? _duracaoSelecionada;
 
   @override
   void initState() {
     super.initState();
-    _loadProdutos();
+    _carregarProdutos();
   }
 
-  Future<void> _loadProdutos() async {
+  Future<void> _carregarProdutos() async {
     final produtos = await _produtoService.carregarProdutos();
     setState(() {
       _produtos = produtos;
@@ -34,20 +36,19 @@ class _CriarSorteioState extends State<CriarSorteio> {
   }
 
   Future<void> _criarSorteio() async {
-    if (_selectedProductIds.isEmpty || _selectedDuration == null) return;
+    if (_idProdutosSelecionados.isEmpty || _duracaoSelecionada == null) return;
 
     final sorteio = Sorteio(
-  nome: "Sorteio Automático",
-  desc: "Sorteio criado automaticamente.",
-  img: "",
-  duration: Duration(minutes: _selectedDuration!),
-  productIds: _selectedProductIds.toList(),
-  createdAt: DateTime.now(), // <-- Crucial!
-);
+      nome: "Sorteio Automático",
+      desc: "Sorteio criado automaticamente.",
+      duracao: Duration(minutes: _duracaoSelecionada!),
+      idProduto: _idProdutosSelecionados.toList(),
+      createdAt: DateTime.now(), // <-- Crucial!
+    );
 
     await _sorteioService.incluirSorteio(sorteio);
 
-    Future.delayed(Duration(minutes: _selectedDuration!), () async {
+    Future.delayed(Duration(minutes: _duracaoSelecionada!), () async {
       if (sorteio.id != null) {
         await _sorteioService.deletarSorteio(sorteio.id!);
       }
@@ -61,7 +62,7 @@ class _CriarSorteioState extends State<CriarSorteio> {
       context,
       MaterialPageRoute(builder: (context) => const StatusSorteio()),
     );
-
+    await __ganhadorService.limparGanhador();
   }
 
   @override
@@ -76,7 +77,9 @@ class _CriarSorteioState extends State<CriarSorteio> {
             children: [
               Card(
                 elevation: 3,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -90,13 +93,13 @@ class _CriarSorteioState extends State<CriarSorteio> {
                       ..._produtos.map((produto) {
                         return CheckboxListTile(
                           title: Text(produto.nome),
-                          value: _selectedProductIds.contains(produto.id),
+                          value: _idProdutosSelecionados.contains(produto.id),
                           onChanged: (bool? selected) {
                             setState(() {
                               if (selected == true) {
-                                _selectedProductIds.add(produto.id!);
+                                _idProdutosSelecionados.add(produto.id!);
                               } else {
-                                _selectedProductIds.remove(produto.id);
+                                _idProdutosSelecionados.remove(produto.id);
                               }
                             });
                           },
@@ -112,31 +115,35 @@ class _CriarSorteioState extends State<CriarSorteio> {
                   labelText: "Duração do Sorteio",
                   border: OutlineInputBorder(),
                 ),
-                value: _selectedDuration,
-                items: [5, 10, 15, 20].map((value) {
-                  return DropdownMenuItem<int>(
-                    value: value,
-                    child: Text("$value minutos"),
-                  );
-                }).toList(),
+                value: _duracaoSelecionada,
+                items:
+                    [5, 10, 15, 20].map((value) {
+                      return DropdownMenuItem<int>(
+                        value: value,
+                        child: Text("$value minutos"),
+                      );
+                    }).toList(),
                 onChanged: (value) {
                   setState(() {
-                    _selectedDuration = value;
+                    _duracaoSelecionada = value;
                   });
                 },
               ),
               const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _criarSorteio,
-                 style: ElevatedButton.styleFrom(
+                style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF3700B3),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                 ),
-        
-                child: const Text("Criar Sorteio", style: TextStyle(fontSize: 18)),
+
+                child: const Text(
+                  "Criar Sorteio",
+                  style: TextStyle(fontSize: 18),
+                ),
               ),
             ],
           ),

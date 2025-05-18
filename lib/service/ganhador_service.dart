@@ -4,12 +4,12 @@ import 'dart:convert';
 import 'package:crud_produto/model/ganhador.dart';
 
 class GanhadorService {
-  final String baseUrl = "https://crud-projeto-87237-default-rtdb.firebaseio.com/ganhador";
+  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/ganhador/";
 
   Future<void> salvarGanhador(Ganhador ganhador) async {
     try {
       final response = await http.post(
-        Uri.parse("$baseUrl.json"),
+        Uri.parse("$url.json"),
         body: jsonEncode(ganhador.toJson()),
       );
 
@@ -18,6 +18,21 @@ class GanhadorService {
       }
     } catch (e) {
       print("Erro ao salvar ganhador: $e");
+      rethrow;
+    }
+  }
+
+   Future<void> limparGanhador() async {
+    try {
+      final resp = await http.delete(
+        Uri.parse("$url.json"),
+      );
+
+      if (resp.statusCode >= 400) {
+        throw Exception("Failed to clear winners: ${resp.body}");
+      }
+    } catch (e) {
+      print("Erro ao limpar ganhadores: $e");
       rethrow;
     }
   }

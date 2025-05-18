@@ -1,75 +1,14 @@
 import 'package:crud_produto/model/produto.dart';
 import 'package:http/http.dart' as http;
-
-//import 'package:crud_produto/service/produto_service.dart';
-
 import 'package:flutter/material.dart';
 
 class InclusaoProduto extends StatelessWidget {
   InclusaoProduto({super.key});
 
   final TextEditingController nomeControler = TextEditingController();
-
   final TextEditingController descControler = TextEditingController();
-
   final TextEditingController imgControler = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Cadastro Produto"),
-
-        backgroundColor: Colors.blue,
-      ),
-
-      body: Center(
-        child: Padding(
-          padding: EdgeInsets.all(8),
-
-          child: Column(
-            children: [
-              TextField(
-                controller: nomeControler,
-
-                decoration: InputDecoration(
-                  label: Text("nome"),
-
-                  border: OutlineInputBorder(),
-                ),
-              ),
-
-              TextField(
-                controller: descControler,
-
-                decoration: InputDecoration(
-                  label: Text("descrição"),
-
-                  border: OutlineInputBorder(),
-                ),
-              ),
-
-              TextField(
-                controller: imgControler,
-
-                decoration: InputDecoration(
-                  label: Text("endereço imagem"),
-
-                  border: OutlineInputBorder(),
-                ),
-              ),
-
-              ElevatedButton(
-                onPressed: () => incluirProduto(context),
-
-                child: Text("Cadastrar"),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Future<void> incluirProduto(BuildContext context) async {
   Produto produto = Produto(
@@ -138,5 +77,61 @@ class InclusaoProduto extends StatelessWidget {
       // Print/log the error if needed
     }
     return false;
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Cadastro Produto"),
+
+        backgroundColor: Colors.blue,
+      ),
+
+      body: Center(
+        child: Padding(
+          padding: EdgeInsets.all(8),
+
+          child: Column(
+            children: [
+              TextField(
+                controller: nomeControler,
+
+                decoration: InputDecoration(
+                  label: Text("nome"),
+
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              TextField(
+                controller: descControler,
+
+                decoration: InputDecoration(
+                  label: Text("descrição"),
+
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              TextField(
+                controller: imgControler,
+
+                decoration: InputDecoration(
+                  label: Text("endereço imagem"),
+
+                  border: OutlineInputBorder(),
+                ),
+              ),
+
+              ElevatedButton(
+                onPressed: () => incluirProduto(context),
+
+                child: Text("Cadastrar"),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

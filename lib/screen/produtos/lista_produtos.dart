@@ -1,9 +1,6 @@
 import 'package:crud_produto/model/produto.dart';
-
 import 'package:crud_produto/screen/produtos/inclusao_produto.dart';
-
 import 'package:crud_produto/service/produto_service.dart';
-
 import 'package:flutter/material.dart';
 
 class ListaProdutos extends StatefulWidget {
@@ -13,9 +10,7 @@ class ListaProdutos extends StatefulWidget {
 
 class _ListaProdutosState extends State<ListaProdutos> {
   ProdutoService produtoService = ProdutoService();
-
   List<Produto> produtos = [];
-
   bool estaCarregando = true;
 
   void initState() {
@@ -34,7 +29,7 @@ class _ListaProdutosState extends State<ListaProdutos> {
     estaCarregando = false;
   }
 
-  void deleteProduto(Produto produto) async {
+  void deletarProduto(Produto produto) async {
     await produtoService.deletarProduto(produto.id!);
 
     setState(() {
@@ -54,7 +49,20 @@ void abrirTelaIclusao() async {
     });
   }
 }
+ void registrarProdutos() async {
+  for (var produto in produtos) {
+    if (produto.id == null) {
+      await produtoService.incluirProduto(produto);
+    }
+  }
 
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(content: Text("Produtos registrados com sucesso!")),
+  );
+
+  // Recarrega do banco, caso deseje ver com IDs atualizados
+  carregaProdutos();
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +115,7 @@ void abrirTelaIclusao() async {
                   subtitle: Text(produto.desc),
                   trailing: IconButton(
                     icon: Icon(Icons.delete),
-                    onPressed: () => deleteProduto(produto),
+                    onPressed: () => deletarProduto(produto),
                   ),
                 ),
               );
@@ -115,19 +123,4 @@ void abrirTelaIclusao() async {
           ),
     );
   }
-
- void registrarProdutos() async {
-  for (var produto in produtos) {
-    if (produto.id == null) {
-      await produtoService.incluirProduto(produto);
-    }
-  }
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    SnackBar(content: Text("Produtos registrados com sucesso!")),
-  );
-
-  // Recarrega do banco, caso deseje ver com IDs atualizados
-  carregaProdutos();
-}
 }

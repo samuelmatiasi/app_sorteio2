@@ -5,7 +5,7 @@ import 'package:crud_produto/model/produto.dart';
 import 'package:http/http.dart' as http;
 
 class ProdutoService {
-  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/products";
+  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/products/";
 
 Future<List<Produto>> carregarProdutos() async {
   var resp = await http.get(Uri.parse("$url.json"));
@@ -34,13 +34,11 @@ Future<List<Produto>> carregarProdutos() async {
     var resp = await http.post(
       //post method
       Uri.parse("$url.json"), //the destination
-
       body: jsonEncode(produto.toJson()), //the content
     );
 
     if (resp.statusCode == 200) {
       //bem sucedido
-
       print("Incluído com sucesso");
     } else {
       print("${resp.statusCode}: ${resp.body}");

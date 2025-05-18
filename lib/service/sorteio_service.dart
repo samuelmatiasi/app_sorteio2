@@ -3,7 +3,7 @@ import 'package:crud_produto/model/sorteio.dart';
 import 'package:http/http.dart' as http;
 
 class SorteioService {
-  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/sorteio";
+  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/sorteio/";
 
   Future<Sorteio?> carregarSorteio() async {
   try {

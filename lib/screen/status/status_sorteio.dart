@@ -28,7 +28,7 @@ class _StatusSorteioState extends State<StatusSorteio> {
   DateTime? _createdTime;
   Timer? _countdownTimer;
   Timer? _participantesTimer;
-  Duration _remaining = Duration.zero;
+  Duration _duracao= Duration.zero;
 
   @override
   void initState() {
@@ -48,12 +48,12 @@ class _StatusSorteioState extends State<StatusSorteio> {
     final sorteio = await _sorteioService.carregarSorteio();
 
     if (sorteio != null && sorteio.createdAt != null) {
-      final endTime = sorteio.createdAt!.add(sorteio.duration);
-      final remaining = endTime.difference(DateTime.now());
+      final tempoFinal = sorteio.createdAt!.add(sorteio.duracao);
+      final duracao = tempoFinal.difference(DateTime.now());
 
-      if (!remaining.isNegative) {
-        _startCountdown(endTime);
-        Timer(remaining, () async {
+      if (!duracao.isNegative) {
+        _startCountdown(tempoFinal);
+        Timer(duracao, () async {
           if (mounted && sorteio.id != null) {
             await _processarVencedor(sorteio);
             await _sorteioService.deletarSorteio(sorteio.id!);
@@ -79,7 +79,7 @@ class _StatusSorteioState extends State<StatusSorteio> {
     setState(() {
       _sorteio = sorteio;
       _createdTime = sorteio?.createdAt;
-      _remaining = _calculateRemaining();
+      _duracao = _calculateduracao();
       _loading = false;
     });
   }
@@ -92,7 +92,6 @@ class _StatusSorteioState extends State<StatusSorteio> {
         id: DateTime.now().millisecondsSinceEpoch.toString(),
         nome: winner.nome,
         telefone: winner.telefone,
-        sorteioNome: sorteio.nome,
         data: DateTime.now(),
       );
       
@@ -117,18 +116,18 @@ class _StatusSorteioState extends State<StatusSorteio> {
     _participantesTimer = Timer.periodic(const Duration(seconds: 5), (_) => _carregarParticipantes());
   }
 
-  void _startCountdown(DateTime endTime) {
+  void _startCountdown(DateTime tempoFinal) {
     _countdownTimer?.cancel();
     _countdownTimer = Timer.periodic(const Duration(seconds: 1), (_) {
       final now = DateTime.now();
-      final diff = endTime.difference(now);
-      setState(() => _remaining = diff.isNegative ? Duration.zero : diff);
+      final diff = tempoFinal.difference(now);
+      setState(() => _duracao = diff.isNegative ? Duration.zero : diff);
     });
   }
 
-  Duration _calculateRemaining() {
+  Duration _calculateduracao() {
     if (_sorteio == null || _createdTime == null) return Duration.zero;
-    final end = _createdTime!.add(_sorteio!.duration);
+    final end = _createdTime!.add(_sorteio!.duracao);
     return end.difference(DateTime.now()).isNegative 
         ? Duration.zero 
         : end.difference(DateTime.now());
@@ -162,7 +161,7 @@ class _StatusSorteioState extends State<StatusSorteio> {
       setState(() {
         _sorteio = null;
         _createdTime = null;
-        _remaining = Duration.zero;
+        _duracao = Duration.zero;
         _participantes = [];
       });
 
@@ -216,13 +215,6 @@ class _StatusSorteioState extends State<StatusSorteio> {
               subtitle: Text(_ganhador!.telefone),
             ),
             const SizedBox(height: 10),
-            Text(
-              "Sorteio: ${_ganhador!.sorteioNome}",
-              style: TextStyle(
-                fontStyle: FontStyle.italic,
-                color: Colors.grey[600],
-              ),
-            ),
             
           ],
         ),
@@ -342,7 +334,7 @@ class _StatusSorteioState extends State<StatusSorteio> {
                 const Icon(Icons.timer_outlined),
                 const SizedBox(width: 10),
                 Text(
-                  "Tempo restante: ${_formatDuration(_remaining)}",
+                  "Tempo restante: ${_formatDuration(_duracao)}",
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
