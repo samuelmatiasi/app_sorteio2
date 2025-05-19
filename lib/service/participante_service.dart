@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;// In SorteioService class
 import 'package:crud_produto/model/participante.dart';
 
 class ParticipanteService{
-final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/participantes/";
+final String url = "https://applespace-a00ab-default-rtdb.firebaseio.com/participantes/";
 
 Future<List<Participante>> carregarParticipantes(String sorteioId) async {
   try {

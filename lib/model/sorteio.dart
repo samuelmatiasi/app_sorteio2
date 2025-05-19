@@ -20,7 +20,7 @@ class Sorteio {
       id: map['id'],
       nome: map['nome'],
       desc: map['desc'],
-      duracao: Duration(minutes: map['duration']),
+      duracao: Duration(minutes: map['duration'] ?? 5),
       idProduto: List<String>.from(map['idProduto']),
       createdAt: map['createdAt'] != null
           ? DateTime.parse(map['createdAt'])

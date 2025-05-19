@@ -89,10 +89,10 @@ class _StatusSorteioState extends State<StatusSorteio> {
     try {
       final winner = _participantes[Random().nextInt(_participantes.length)];
       _ganhador = Ganhador(
-        id: DateTime.now().millisecondsSinceEpoch.toString(),
+      
         nome: winner.nome,
         telefone: winner.telefone,
-        data: DateTime.now(),
+
       );
       
       await _ganhadorService.salvarGanhador(_ganhador!);

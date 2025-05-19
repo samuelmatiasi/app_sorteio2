@@ -5,7 +5,7 @@ import 'package:crud_produto/model/produto.dart';
 import 'package:http/http.dart' as http;
 
 class ProdutoService {
-  final String url = "https://crud-projeto-87237-default-rtdb.firebaseio.com/products/";
+  final String url = "https://applespace-a00ab-default-rtdb.firebaseio.com/products/";
 
 Future<List<Produto>> carregarProdutos() async {
   var resp = await http.get(Uri.parse("$url.json"));
